@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import Layout, { siteTitle } from '../components/layout'
-import utilStyles from '../styles/utils.module.css'
 import { getSortedPostsData } from '../lib/posts'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
@@ -9,6 +8,8 @@ import Navigation from "./navigation";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
+import Carousel from "react-bootstrap/Carousel";
+import Jumbotron from 'react-bootstrap/Jumbotron';
 
 function SecondComponent() {
     const [data, setData] = useState({ person:{professionalHeadline:''} });
@@ -42,10 +43,22 @@ function SecondComponent() {
                     {data.person.professionalHeadline}
                 </Tab>
                 <Tab eventKey="opportunities" title="Opportunities">
-                    Opportunities:
-                    <ul>
-                        {results.map(r => <li>{r.objective}</li>)}
-                    </ul>
+                    <Jumbotron>
+                    <Carousel>
+                        {results.map(({id, objective, organizations}) => <Carousel.Item key={id}>
+                            {organizations.map(({id, picture}) => <img key={id}
+                                src={picture}
+                            />)}
+
+                            <Carousel.Caption>
+                                <h3>{objective}</h3>
+                                <p>at
+                                    {organizations.map(({name}) => name).join(', ')}
+                                </p>
+                            </Carousel.Caption>
+                        </Carousel.Item>)}
+                    </Carousel>
+                    </Jumbotron>
                 </Tab>
             </Tabs>
         </div>
