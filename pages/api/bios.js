@@ -8,6 +8,6 @@ export default async function handler(req, res) {
         const json = await result.json();
         res.json(json)
     } catch(ex) {
-        console.info(ex);
+        console.error(ex);
     }
 }
