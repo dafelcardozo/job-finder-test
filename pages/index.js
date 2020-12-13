@@ -2,8 +2,51 @@ import Head from 'next/head'
 import Layout, { siteTitle } from '../components/layout'
 import utilStyles from '../styles/utils.module.css'
 import { getSortedPostsData } from '../lib/posts'
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
 import Date from '../components/date'
+import axios from 'axios'
+
+
+
+function SecondComponent() {
+    const [data, setData] = useState({ person:{professionalHeadline:''} });
+    const [query, setQuery] = useState('');
+    const fetchData = async () => {
+        const result = await axios.get('/api/bios?profile=dafelcardozo');
+        setData(result.data);
+    }
+    useEffect( () => {
+        fetchData();
+
+    }, [query]);
+    return (
+        <div className="App">
+            <header className="App-header">
+                <p>
+                    Edit <code>src/App.js</code> and save to reload.
+                </p>
+                <a
+                    className="App-link"
+                    href="https://reactjs.org"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Learn React
+                </a>
+
+            </header>
+            <input
+                type="text"
+                value={query}
+                onChange={event => setQuery(event.target.value)}
+            />
+            Person:
+            {data.person.professionalHeadline}
+        </div>
+    );
+}
+
 
 export default function Home({ allPostsData }) {
   return (
@@ -20,19 +63,7 @@ export default function Home({ allPostsData }) {
       </section>
       <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
         <h2 className={utilStyles.headingLg}>Blog</h2>
-        <ul className={utilStyles.list}>
-          {allPostsData.map(({ id, date, title }) => (
-            <li className={utilStyles.listItem} key={id}>
-              <Link href={`/posts/${id}`}>
-                <a>{title}</a>
-              </Link>
-              <br />
-              <small className={utilStyles.lightText}>
-                <Date dateString={date} />
-              </small>
-            </li>
-          ))}
-        </ul>
+        <SecondComponent/>
       </section>
     </Layout>
   )
