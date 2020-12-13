@@ -1,6 +1,8 @@
-import Head from 'next/head'
-import styles from './layout.module.css'
-import Link from 'next/link'
+import Head from 'next/head';
+import styles from './layout.module.css';
+import Link from 'next/link';
+import 'startbootstrap-simple-sidebar/css/simple-sidebar.css';
+import React from "react";
 
 export const siteTitle = 'Next.js Sample Website';
 

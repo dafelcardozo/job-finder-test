@@ -6,11 +6,14 @@ import axios from 'axios'
 import './navigation'
 import Navigation from "./navigation";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Carousel from "react-bootstrap/Carousel";
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
+import JobsFilterBar from "../components/jobsFilterBar";
+
 
 function SecondComponent() {
     const [data, setData] = useState({ person:{professionalHeadline:''} });
@@ -31,6 +34,9 @@ function SecondComponent() {
         fetchProfile();
         searchOpportunities();
     }, [query]);
+
+    const [visible, setVisible] = useState(false);
+
     return (
         <Container fluid>
             <input
@@ -44,22 +50,33 @@ function SecondComponent() {
                     {data.person.professionalHeadline}
                 </Tab>
                 <Tab eventKey="opportunities" title="Opportunities">
-                    <Jumbotron>
-                        <Carousel>
-                            {results.map(({id, objective, organizations}) => <Carousel.Item key={id}>
-                                {organizations.map(({id, picture}) => <img key={id}
-                                                                           src={picture}
-                                />)}
+                    <div className="container-fluid">
+                        <div className="row">
+                            <div className="col-2">
+                                <JobsFilterBar visible={visible}/>
+                            </div>
+                            <div className="col-10">
+                                <Jumbotron>
+                                    <button className="btn btn-primary" id="menu-toggle" onClick={() => setVisible(!visible)}>Toggle Menu</button>
 
-                                <Carousel.Caption>
-                                    <h3>{objective}</h3>
-                                    <p>at
-                                        {organizations.map(({name}) => name).join(', ')}
-                                    </p>
-                                </Carousel.Caption>
-                            </Carousel.Item>)}
-                        </Carousel>
-                    </Jumbotron>
+                                    <Carousel>
+                                        {results.map(({id, objective, organizations}) => <Carousel.Item key={id}>
+                                            {organizations.map(({id, picture}) => <img key={id}
+                                                                                       src={picture}
+                                            />)}
+
+                                            <Carousel.Caption>
+                                                <h3>{objective}</h3>
+                                                <p>at
+                                                    {organizations.map(({name}) => name).join(', ')}
+                                                </p>
+                                            </Carousel.Caption>
+                                        </Carousel.Item>)}
+                                    </Carousel>
+                                </Jumbotron>
+                            </div>
+                        </div>
+                    </div>
                 </Tab>
             </Tabs>
         </Container>
