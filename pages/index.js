@@ -3,11 +3,12 @@ import Layout, { siteTitle } from '../components/layout'
 import utilStyles from '../styles/utils.module.css'
 import { getSortedPostsData } from '../lib/posts'
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link'
-import Date from '../components/date'
 import axios from 'axios'
-
-
+import './navigation'
+import Navigation from "./navigation";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 
 function SecondComponent() {
     const [data, setData] = useState({ person:{professionalHeadline:''} });
@@ -30,31 +31,23 @@ function SecondComponent() {
     }, [query]);
     return (
         <div className="App">
-            <header className="App-header">
-                <p>
-                    Edit <code>src/App.js</code> and save to reload.
-                </p>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
-
-            </header>
             <input
-                type="text"
+                type="hidden"
                 value={query}
                 onChange={event => setQuery(event.target.value)}
             />
-            Person:
-            {data.person.professionalHeadline}
-            Opportunities:
-            <ul>
-                {results.map(r => <li>{r.objective}</li>)}
-            </ul>
+            <Tabs defaultActiveKey="persons" id="uncontrolled-tab-example">
+                <Tab eventKey="persons" title="Persons">
+                    Person:
+                    {data.person.professionalHeadline}
+                </Tab>
+                <Tab eventKey="opportunities" title="Opportunities">
+                    Opportunities:
+                    <ul>
+                        {results.map(r => <li>{r.objective}</li>)}
+                    </ul>
+                </Tab>
+            </Tabs>
         </div>
     );
 }
@@ -63,20 +56,11 @@ function SecondComponent() {
 export default function Home({ allPostsData }) {
   return (
     <Layout home>
+        <Navigation/>
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <section className={utilStyles.headingMd}>
-        <p>[Your Self Introduction]</p>
-        <p>
-          (This is a sample website - you’ll be building a site like this in{' '}
-          <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
-        </p>
-      </section>
-      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
-        <h2 className={utilStyles.headingLg}>Blog</h2>
         <SecondComponent/>
-      </section>
     </Layout>
   )
 }
