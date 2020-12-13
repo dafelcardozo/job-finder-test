@@ -10,6 +10,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Carousel from "react-bootstrap/Carousel";
 import Jumbotron from 'react-bootstrap/Jumbotron';
+import Container from 'react-bootstrap/Container';
 
 function SecondComponent() {
     const [data, setData] = useState({ person:{professionalHeadline:''} });
@@ -31,7 +32,7 @@ function SecondComponent() {
         searchOpportunities();
     }, [query]);
     return (
-        <div className="App">
+        <Container fluid>
             <input
                 type="hidden"
                 value={query}
@@ -44,34 +45,35 @@ function SecondComponent() {
                 </Tab>
                 <Tab eventKey="opportunities" title="Opportunities">
                     <Jumbotron>
-                    <Carousel>
-                        {results.map(({id, objective, organizations}) => <Carousel.Item key={id}>
-                            {organizations.map(({id, picture}) => <img key={id}
-                                src={picture}
-                            />)}
+                        <Carousel>
+                            {results.map(({id, objective, organizations}) => <Carousel.Item key={id}>
+                                {organizations.map(({id, picture}) => <img key={id}
+                                                                           src={picture}
+                                />)}
 
-                            <Carousel.Caption>
-                                <h3>{objective}</h3>
-                                <p>at
-                                    {organizations.map(({name}) => name).join(', ')}
-                                </p>
-                            </Carousel.Caption>
-                        </Carousel.Item>)}
-                    </Carousel>
+                                <Carousel.Caption>
+                                    <h3>{objective}</h3>
+                                    <p>at
+                                        {organizations.map(({name}) => name).join(', ')}
+                                    </p>
+                                </Carousel.Caption>
+                            </Carousel.Item>)}
+                        </Carousel>
                     </Jumbotron>
                 </Tab>
             </Tabs>
-        </div>
+        </Container>
+
     );
 }
 
 
-export default function Home({ allPostsData }) {
+export default function Home({  }) {
   return (
     <Layout home>
         <Navigation/>
       <Head>
-        <title>{siteTitle}</title>
+        <title>Torre title</title>
       </Head>
         <SecondComponent/>
     </Layout>
