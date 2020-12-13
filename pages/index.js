@@ -12,13 +12,21 @@ import axios from 'axios'
 function SecondComponent() {
     const [data, setData] = useState({ person:{professionalHeadline:''} });
     const [query, setQuery] = useState('');
-    const fetchData = async () => {
+    const [results, setResults] = useState({});
+    const fetchProfile = async () => {
         const result = await axios.get('/api/bios?profile=dafelcardozo');
         setData(result.data);
-    }
+    };
+    const searchOpportunities = async () => {
+        const res = await axios.post(
+            '/api/opportunities?currency=USD%24&page=1&periodicity=hourly&lang=es&size=20&aggregate=false&offset=20',
+            {"type":{"code":"full-time-employment"}},
+            {headers:{"content-type":"application/json;charset=UTF-8"}});
+        setResults(res.data.results);
+    };
     useEffect( () => {
-        fetchData();
-
+        fetchProfile();
+        searchOpportunities();
     }, [query]);
     return (
         <div className="App">
@@ -43,6 +51,10 @@ function SecondComponent() {
             />
             Person:
             {data.person.professionalHeadline}
+            Opportunities:
+            <ul>
+                {results.map(r => <li>{r.objective}</li>)}
+            </ul>
         </div>
     );
 }
