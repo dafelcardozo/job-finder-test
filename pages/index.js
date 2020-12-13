@@ -127,10 +127,7 @@ function PersonList() {
                     <Figure>
                         <Figure.Image src={person.picture}/>
                     </Figure>
-                    <Button onClick={() => {i
-                        console.info({username:person.username});
-                        setProfile_id(person.username)
-                    }}>Show</Button>
+                    <Button onClick={() => setProfile_id(person.username)}>Show</Button>
                 </Jumbotron></Col>)}
             </Row>)}
             <ProfileModal profile_id={profile_id} show={!!profile_id} onHide={() => setProfile_id('')}/>
