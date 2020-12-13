@@ -12,7 +12,7 @@ import axios from 'axios'
 function SecondComponent() {
     const [data, setData] = useState({ person:{professionalHeadline:''} });
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState({});
+    const [results, setResults] = useState([]);
     const fetchProfile = async () => {
         const result = await axios.get('/api/bios?profile=dafelcardozo');
         setData(result.data);
