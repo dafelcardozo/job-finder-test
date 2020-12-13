@@ -16,6 +16,9 @@ import JobsFilterBar from "../components/jobsFilterBar";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Figure from "react-bootstrap/Figure";
+import Button from 'react-bootstrap/Button';
+import Modal from  'react-bootstrap/Modal';
+
 
 function OpportunitiesCarousel() {
     const [opportunities, setOpportunities] = useState([]);
@@ -45,24 +48,62 @@ function OpportunitiesCarousel() {
     </Carousel>
 }
 
-function Profile() {
+function ProfileModal({show, profile_id, onHide, ...props}) {
     const [profile, setDataProfile] = useState({ person:{professionalHeadline:''} });
     const fetchProfile = async () => {
-        const result = await axios.get('/api/bios?profile=dafelcardozo');
-        setDataProfile(result.data);
+        if (profile_id) {
+            const result = await axios.get(`/api/bios?profile=${profile_id}`);
+            setDataProfile(result.data);
+        } else {
+            setDataProfile({person:{professionalHeadline:''}});
+        }
     };
     useEffect( () => {
         fetchProfile();
-    }, ['' ]);
-    return <>
-        The profile:
-        {profile.person.professionalHeadline}
-        </>;
+    }, [profile_id ]);
+    return (
+    <Modal show={show} {...props} aria-labelledby="contained-modal-title-vcenter">
+        <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+                Profile of {profile.person.professionalHeadline}
+            </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="show-grid">
+            <Container>
+                <Row>
+                    <Col xs={12} md={8}>
+
+                    </Col>
+                    <Col xs={6} md={4}>
+                        .col-xs-6 .col-md-4
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col xs={6} md={4}>
+                        .col-xs-6 .col-md-4
+                    </Col>
+                    <Col xs={6} md={4}>
+                        .col-xs-6 .col-md-4
+                    </Col>
+                    <Col xs={6} md={4}>
+                        .col-xs-6 .col-md-4
+                    </Col>
+                </Row>
+            </Container>
+        </Modal.Body>
+        <Modal.Footer>
+            <Button onClick={() => onHide()}>Close</Button>
+        </Modal.Footer>
+    </Modal>)
+        ;
 }
 
 
 function PersonList() {
     const [persons, setPersons] = useState([]);
+    const [profile_id, setProfile_id] = useState('');
+
     const searchPeople = async () => {
         const res = await axios.post(
             '/api/people?currency=USD%24&page=1&periodicity=hourly&lang=es&size=20&aggregate=false&offset=20',
@@ -80,14 +121,19 @@ function PersonList() {
         return acc;
     },[[]]);
     return <Container fluid>
-            {rows.map(r => <Row>
-                {r.map(person => <Col> <Jumbotron>
+            {rows.map((r, i) => <Row key={i}>
+                {r.map((person, j) => <Col key={j}> <Jumbotron>
                     {person.name}
                     <Figure>
                         <Figure.Image src={person.picture}/>
                     </Figure>
+                    <Button onClick={() => {i
+                        console.info({username:person.username});
+                        setProfile_id(person.username)
+                    }}>Show</Button>
                 </Jumbotron></Col>)}
             </Row>)}
+            <ProfileModal profile_id={profile_id} show={!!profile_id} onHide={() => setProfile_id('')}/>
         </Container>
         ;
 }
@@ -107,9 +153,6 @@ function SecondComponent() {
             <Tabs defaultActiveKey="persons" id="uncontrolled-tab-example">
                 <Tab eventKey='persons' title="Persons">
                     <PersonList/>
-                </Tab>
-                <Tab eventKey="profile" title="Profile">
-                    <Profile/>
                 </Tab>
                 <Tab eventKey="opportunities" title="Opportunities">
                     <div className="container-fluid">
