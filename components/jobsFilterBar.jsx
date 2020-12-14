@@ -2,7 +2,7 @@ import React from "react";
 
 
 export default function JobsFilterBar({visible}) {
-    const wrapperClass = `d-flex ${visible?"toggled":''}`;
+    const wrapperClass = `d-flex ${!visible && "toggled"}`;
     return (<div className={ wrapperClass } id="wrapper">
         <div className="bg-light border-right" id="sidebar-wrapper">
             <div className="sidebar-heading">Start Bootstrap</div>
