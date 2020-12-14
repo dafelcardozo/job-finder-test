@@ -18,6 +18,7 @@ import Col from 'react-bootstrap/Col';
 import Figure from "react-bootstrap/Figure";
 import Button from 'react-bootstrap/Button';
 import Modal from  'react-bootstrap/Modal';
+import Spinner from 'react-bootstrap/Spinner';
 
 
 function OpportunitiesCarousel() {
@@ -50,10 +51,13 @@ function OpportunitiesCarousel() {
 
 function ProfileModal({show, profile_id, onHide, ...props}) {
     const [profile, setDataProfile] = useState({ person:{professionalHeadline:''} });
+    const [loading, setLoading] = useState(false);
     const fetchProfile = async () => {
         if (profile_id) {
+            setLoading(true);
             const result = await axios.get(`/api/bios?profile=${profile_id}`);
             setDataProfile(result.data);
+            setLoading(false);
         } else {
             setDataProfile({person:{professionalHeadline:''}});
         }
@@ -62,27 +66,31 @@ function ProfileModal({show, profile_id, onHide, ...props}) {
         fetchProfile();
     }, [profile_id ]);
     const {person} = profile;
-    const {name, picture, professionalHeadline} = person;
+    const {name, professionalHeadline, pictureThumbnail} = person;
     return (
-    <Modal show={show} {...props} aria-labelledby="contained-modal-title-vcenter">
+    <Modal show={show} {...props} aria-labelledby="contained-modal-title-vcenter" size="lg">
         <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
                 {name}
             </Modal.Title>
         </Modal.Header>
         <Modal.Body className="show-grid">
-            <Container>
-                <Row>
-                    <Figure>
-                        <Figure.Image src={picture}/>
-                    </Figure>
-                </Row>
-                <Row>
-                    <Col>
-                        {professionalHeadline}
-                    </Col>
-                </Row>
-            </Container>
+            {loading && <Spinner animation="border" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </Spinner>}
+            {!loading && (
+                <Container>
+                    <Row>
+                        <Figure>
+                            <Figure.Image src={pictureThumbnail}/>
+                        </Figure>
+                    </Row>
+                    <Row>
+                        <Col>
+                            {professionalHeadline}
+                        </Col>
+                    </Row>
+                </Container>)}
         </Modal.Body>
         <Modal.Footer>
             <Button onClick={() => onHide()}>Close</Button>
