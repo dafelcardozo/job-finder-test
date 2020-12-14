@@ -3,10 +3,7 @@ import Layout from '../components/layout'
 import { getSortedPostsData } from '../lib/posts'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
-import './navigation'
 import Navigation from "./navigation";
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Carousel from "react-bootstrap/Carousel";
@@ -19,7 +16,6 @@ import Figure from "react-bootstrap/Figure";
 import Button from 'react-bootstrap/Button';
 import Modal from  'react-bootstrap/Modal';
 import Spinner from 'react-bootstrap/Spinner';
-
 
 function OpportunitiesCarousel() {
     const [opportunities, setOpportunities] = useState([]);
