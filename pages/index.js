@@ -112,8 +112,7 @@ function StrengthsPaginated({strengths}) {
 function FullProfilePage({profile_id}) {
     const noOne = {
         person: {professionalHeadline: '', name: '', links: [], location: {name: ''}},
-        experiences: [],
-        strengths: []
+        experiences: [], strengths: [], languages: [], interests: []
     };
     const [profile, setDataProfile] = useState(noOne);
     const [loading, setLoading] = useState(false);
@@ -130,7 +129,7 @@ function FullProfilePage({profile_id}) {
     useEffect( () => {
         fetchProfile();
     }, [profile_id]);
-    const {person, experiences, strengths} = profile;
+    const {person, experiences, strengths, interests, languages} = profile;
     const {name, professionalHeadline, pictureThumbnail, links, location} = person;
     const {name:lName, country} = location;
     return <Container fluid>
@@ -163,6 +162,19 @@ function FullProfilePage({profile_id}) {
                             <Row>Habilidades actuales:</Row>
                             <Row>
                                 <StrengthsPaginated strengths={strengths} />
+                            </Row>
+                            <Row>
+                                Habilidades que él/ella quiere desarrollar:
+                            </Row>
+                            <Row>
+                                {interests.map(({name}) => <Badge key={name}  pill variant="secondary">{name}</Badge>)}
+
+                            </Row>
+                            <Row>
+                                Lenguajes:
+                            </Row>
+                            <Row>
+                                {languages.map(({language, fluency}) => <Badge key={language} pill variant="secondary">{language} - {fluency}</Badge>)}
                             </Row>
                         </Container>
                     </Col>
