@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Layout from '../components/layout'
-import { getSortedPostsData } from '../lib/posts'
-import React, { useState, useEffect } from 'react';
+import {getSortedPostsData} from '../lib/posts'
+import React, {useEffect, useState} from 'react';
 import axios from 'axios'
 import Navigation from "./navigation";
 import Carousel from "react-bootstrap/Carousel";
@@ -12,10 +12,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Figure from "react-bootstrap/Figure";
 import Button from 'react-bootstrap/Button';
-import Modal from  'react-bootstrap/Modal';
+import Modal from 'react-bootstrap/Modal';
 import Spinner from 'react-bootstrap/Spinner';
 import Badge from 'react-bootstrap/Badge';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/css/brands.css'
@@ -202,9 +202,8 @@ function FullProfilePage({profile_id}) {
 
 }
 
-function PersonList() {
+function PersonList({onProfileSelected}) {
     const [persons, setPersons] = useState([]);
-    const [profile_id, setProfile_id] = useState('');
 
     const searchPeople = async () => {
         const res = await axios.post(
@@ -224,15 +223,15 @@ function PersonList() {
     },[[]]);
     return <Container fluid>
             {rows.map((r, i) => <Row key={i}>
-                {r.map((person, j) => <Col key={j}> <Jumbotron>
-                    {person.name}
+                {r.map(({picture, name, username}, j) => <Col key={j}> <Jumbotron>
+                    {name}
                     <Figure>
-                        <Figure.Image src={person.picture} width={171} height={180} rounded />
+                        <Figure.Image src={picture} width={171} height={180} rounded />
                     </Figure>
-                    <Button onClick={() => setProfile_id(person.username)}>Show</Button>
+                    <Button onClick={() => onProfileSelected(username)}>Show</Button>
                 </Jumbotron></Col>)}
             </Row>)}
-            <ProfileModal profile_id={profile_id} show={!!profile_id} onHide={() => setProfile_id('')}/>
+            {/*<ProfileModal profile_id={profile_id} show={!!profile_id} onHide={() => setProfile_id('')}/>*/}
         </Container>
         ;
 }
@@ -241,10 +240,17 @@ function PersonList() {
 
 function PagesList({page}) {
     const [visible, setVisible] = useState(false);
+    const [profileId, setProfileId] = useState('');
+    useEffect(() => {
+       setProfileId('')
+    }, [page]);
     return (
         <Container fluid>
-            {page === 'persons' &&  <PersonList/>}
-            {page === 'opportunities' && <div className="container-fluid">
+            {!profileId && page === 'persons' &&  <PersonList onProfileSelected={(id) => {
+                console.info('Sets the profile id: '+id);
+                setProfileId(id)
+            }}/>}
+            {!profileId && page === 'opportunities' && <div className="container-fluid">
                 <div className="row">
                     <div className="col-2">
                         <JobsFilterBar visible={visible}/>
@@ -257,7 +263,8 @@ function PagesList({page}) {
                     </div>
                 </div>
             </div>}
-            {page === 'genome' && <FullProfilePage profile_id='dafelcardozo'/>}
+            {!profileId && page === 'genome' && <FullProfilePage profile_id='dafelcardozo'/>}
+            {setProfileId && <FullProfilePage profile_id={profileId} />}
         </Container>
 
     );
