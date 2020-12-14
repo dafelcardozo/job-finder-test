@@ -1,21 +1,19 @@
 import Head from 'next/head';
-import styles from './layout.module.css';
 import Link from 'next/link';
-import 'startbootstrap-simple-sidebar/css/simple-sidebar.css';
 import React from "react";
 
 export const siteTitle = 'Next.js Sample Website';
 
 export default function Layout({ children, home }) {
   return (
-    <div className={styles.container}>
+    <div >
       <Head>
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       </Head>
       <main>{children}</main>
       {!home && (
-        <div className={styles.backToHome}>
+        <div >
           <Link href="/">
             <a>← Back to home</a>
           </Link>

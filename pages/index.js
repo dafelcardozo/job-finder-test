@@ -1,11 +1,10 @@
+import ReactDOM from 'react-dom'
 import Head from 'next/head'
 import Layout from '../components/layout'
 import { getSortedPostsData } from '../lib/posts'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import Navigation from "./navigation";
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
 import Carousel from "react-bootstrap/Carousel";
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import Container from 'react-bootstrap/Container';
@@ -16,6 +15,11 @@ import Figure from "react-bootstrap/Figure";
 import Button from 'react-bootstrap/Button';
 import Modal from  'react-bootstrap/Modal';
 import Spinner from 'react-bootstrap/Spinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@fortawesome/fontawesome-free/css/brands.css'
+import '@fortawesome/fontawesome-free/js/all'
 
 function OpportunitiesCarousel() {
     const [opportunities, setOpportunities] = useState([]);
@@ -96,6 +100,51 @@ function ProfileModal({show, profile_id, onHide, ...props}) {
 }
 
 
+function FullProfilePage({profile_id}) {
+    const noOne = { person:{professionalHeadline:'', name:'', links:[]} };
+    const [profile, setDataProfile] = useState(noOne);
+    const [loading, setLoading] = useState(false);
+    const fetchProfile = async () => {
+        if (profile_id) {
+            setLoading(true);
+            const result = await axios.get(`/api/bios?profile=${profile_id}`);
+            setDataProfile(result.data);
+            setLoading(false);
+        } else {
+            setDataProfile(noOne);
+        }
+    };
+    useEffect( () => {
+        fetchProfile();
+    }, [profile_id]);
+    const {person} = profile;
+    const {name, professionalHeadline, pictureThumbnail, links, location} = person;
+    return <Container>
+        {loading && <Spinner animation='grow' />}
+            {!loading &&
+            <>
+        <Row>
+            <Figure>
+                <Figure.Image src={pictureThumbnail} width={171} height={180} rounded />
+            </Figure>
+        </Row>
+        <Row>
+            {name}
+        </Row>
+        <Row>
+            {professionalHeadline}
+        </Row>
+            <Row>
+            {links.map(({name, address}, i) =>
+                <a key={i} href={address} target='_blank'>
+                    <FontAwesomeIcon icon={["fab", name]} />&nbsp;
+                </a>)}
+        </Row>
+    </>}
+    </Container>
+
+}
+
 function PersonList() {
     const [persons, setPersons] = useState([]);
     const [profile_id, setProfile_id] = useState('');
@@ -133,7 +182,7 @@ function PersonList() {
 
 
 
-function MainTabs({page}) {
+function PagesList({page}) {
     const [visible, setVisible] = useState(false);
     return (
         <Container fluid>
@@ -151,6 +200,7 @@ function MainTabs({page}) {
                     </div>
                 </div>
             </div>}
+            {page === 'genome' && <FullProfilePage profile_id='dafelcardozo'/>}
         </Container>
 
     );
@@ -165,7 +215,7 @@ export default function Home({}) {
             <Head>
                 <title>Torre title</title>
             </Head>
-            <MainTabs page={page}/>
+            <PagesList page={page}/>
         </Layout>
     )
 }
