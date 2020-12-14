@@ -4,7 +4,7 @@ import Image from 'react-bootstrap/Image';
 import React from "react";
 
 export default function Navigation({}) {
-    return <Navbar bg="light" expand="lg" variant="dark">
+    return <Navbar bg="light" expand="lg" >
         <Navbar.Brand href="#home">
             <Image src="/Torre_logo_small_uubm3e.png" />
         </Navbar.Brand>
@@ -13,7 +13,7 @@ export default function Navigation({}) {
             <Nav className="mr-auto">
                 <Nav.Link href='#search'>Buscar</Nav.Link>
                 <Nav.Link href='#jobs'>Trabajos</Nav.Link>
-                <Nav.Link href="#publish">Publicar trabajo</Nav.Link>
+                <Nav.Link href="#publish" active>Publicar trabajo</Nav.Link>
                 <Nav.Link href="#genome">Tu genoma</Nav.Link>
                 <Nav.Link href="#signals">Signals</Nav.Link>
             </Nav>
