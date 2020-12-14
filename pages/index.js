@@ -133,46 +133,41 @@ function PersonList() {
 
 
 
-function MainTabs() {
+function MainTabs({page}) {
     const [visible, setVisible] = useState(false);
     return (
         <Container fluid>
-            <Tabs defaultActiveKey="persons" id="uncontrolled-tab-example">
-                <Tab eventKey='persons' title="Persons">
-                    <PersonList/>
-                </Tab>
-                <Tab eventKey="opportunities" title="Opportunities">
-                    <div className="container-fluid">
-                        <div className="row">
-                            <div className="col-2">
-                                <JobsFilterBar visible={visible}/>
-                            </div>
-                            <div className="col-10">
-                                <Jumbotron>
-                                    <button className="btn btn-primary" id="menu-toggle" onClick={() => setVisible(!visible)}>Toggle Menu</button>
-                                    <OpportunitiesCarousel />
-                                </Jumbotron>
-                            </div>
-                        </div>
+            {page === 'persons' &&  <PersonList/>}
+            {page === 'opportunities' && <div className="container-fluid">
+                <div className="row">
+                    <div className="col-2">
+                        <JobsFilterBar visible={visible}/>
                     </div>
-                </Tab>
-            </Tabs>
+                    <div className="col-10">
+                        <Jumbotron>
+                            <button className="btn btn-primary" id="menu-toggle" onClick={() => setVisible(!visible)}>Toggle Menu</button>
+                            <OpportunitiesCarousel />
+                        </Jumbotron>
+                    </div>
+                </div>
+            </div>}
         </Container>
 
     );
 }
 
 
-export default function Home({  }) {
-  return (
-    <Layout home>
-        <Navigation/>
-      <Head>
-        <title>Torre title</title>
-      </Head>
-        <MainTabs/>
-    </Layout>
-  )
+export default function Home({}) {
+    const [page, setPage] = useState('');
+    return (
+        <Layout home>
+            <Navigation OnSelect={(key) => setPage(key)}/>
+            <Head>
+                <title>Torre title</title>
+            </Head>
+            <MainTabs page={page}/>
+        </Layout>
+    )
 }
 
 export async function getStaticProps() {
