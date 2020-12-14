@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom'
 import Head from 'next/head'
 import Layout from '../components/layout'
 import { getSortedPostsData } from '../lib/posts'
@@ -101,7 +100,9 @@ function ProfileModal({show, profile_id, onHide, ...props}) {
 
 
 function FullProfilePage({profile_id}) {
-    const noOne = { person:{professionalHeadline:'', name:'', links:[]}, experiences:[]};
+    const noOne = {
+        person: {professionalHeadline: '', name: '', links: [], location: {name: ''}}, experiences: []
+    };
     const [profile, setDataProfile] = useState(noOne);
     const [loading, setLoading] = useState(false);
     const fetchProfile = async () => {
@@ -119,6 +120,7 @@ function FullProfilePage({profile_id}) {
     }, [profile_id]);
     const {person, experiences} = profile;
     const {name, professionalHeadline, pictureThumbnail, links, location} = person;
+    const {name:lName, country} = location;
     return <Container fluid>
         {loading && <Spinner animation='grow' />}
             {!loading &&
@@ -138,6 +140,9 @@ function FullProfilePage({profile_id}) {
                                 {professionalHeadline}
                             </Row>
                             <Row>
+                                {lName || country}
+                            </Row>
+                            <Row>
                                 {links.map(({name, address}, i) =>
                                     <a key={i} href={address} target='_blank'>
                                         <FontAwesomeIcon icon={["fab", name]} />&nbsp;
@@ -146,12 +151,20 @@ function FullProfilePage({profile_id}) {
                         </Container>
                     </Col>
                     <Col>
-                        {experiences.map(({name, organizations, additionalInfo}) => (
+                        <Row>Résumé</Row>
+                        {experiences.map(({name, organizations, additionalInfo, responsibilities, fromMonth, fromYear, toMonth, toYear}) => (<>
                             <Row>
                                 {name} at {organizations.map(({name, picture}) => (
-                                <>{name}{picture && <Figure><Figure.Image src={picture} width={85} height={90}  /> </Figure>}</>))}
+                                <>{name}{picture && <Figure><Figure.Image src={picture} width={42} height={45} /></Figure>}</>))}
+                            </Row>
+                            <Row>
                                 {additionalInfo}
-                            </Row>))}
+                                De {fromMonth}/{fromYear} a {toMonth}/{toYear}
+                                <ul>
+                                    {responsibilities.map(r => <li>{r}</li>)}
+                                </ul>
+                            </Row>
+                            </>))}
                     </Col>
                 </Row>
             </Container>
