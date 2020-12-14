@@ -101,7 +101,7 @@ function ProfileModal({show, profile_id, onHide, ...props}) {
 
 
 function FullProfilePage({profile_id}) {
-    const noOne = { person:{professionalHeadline:'', name:'', links:[]} };
+    const noOne = { person:{professionalHeadline:'', name:'', links:[]}, experiences:[]};
     const [profile, setDataProfile] = useState(noOne);
     const [loading, setLoading] = useState(false);
     const fetchProfile = async () => {
@@ -117,30 +117,46 @@ function FullProfilePage({profile_id}) {
     useEffect( () => {
         fetchProfile();
     }, [profile_id]);
-    const {person} = profile;
+    const {person, experiences} = profile;
     const {name, professionalHeadline, pictureThumbnail, links, location} = person;
-    return <Container>
+    return <Container fluid>
         {loading && <Spinner animation='grow' />}
             {!loading &&
-            <>
-        <Row>
-            <Figure>
-                <Figure.Image src={pictureThumbnail} width={171} height={180} rounded />
-            </Figure>
-        </Row>
-        <Row>
-            {name}
-        </Row>
-        <Row>
-            {professionalHeadline}
-        </Row>
-            <Row>
-            {links.map(({name, address}, i) =>
-                <a key={i} href={address} target='_blank'>
-                    <FontAwesomeIcon icon={["fab", name]} />&nbsp;
-                </a>)}
-        </Row>
-    </>}
+            <Container>
+                <Row>
+                    <Col>
+                        <Container>
+                            <Row>
+                                <Figure>
+                                    <Figure.Image src={pictureThumbnail} width={171} height={180} rounded />
+                                </Figure>
+                            </Row>
+                            <Row>
+                                {name}
+                            </Row>
+                            <Row>
+                                {professionalHeadline}
+                            </Row>
+                            <Row>
+                                {links.map(({name, address}, i) =>
+                                    <a key={i} href={address} target='_blank'>
+                                        <FontAwesomeIcon icon={["fab", name]} />&nbsp;
+                                    </a>)}
+                            </Row>
+                        </Container>
+                    </Col>
+                    <Col>
+                        {experiences.map(({name, organizations, additionalInfo}) => (
+                            <Row>
+                                {name} at {organizations.map(({name, picture}) => (
+                                <>{name}{picture && <Figure><Figure.Image src={picture} width={85} height={90}  /> </Figure>}</>))}
+                                {additionalInfo}
+                            </Row>))}
+                    </Col>
+                </Row>
+            </Container>
+
+    }
     </Container>
 
 }
