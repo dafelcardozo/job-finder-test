@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import Layout, { siteTitle } from '../components/layout'
+import Layout from '../components/layout'
 import { getSortedPostsData } from '../lib/posts'
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'
@@ -61,33 +61,25 @@ function ProfileModal({show, profile_id, onHide, ...props}) {
     useEffect( () => {
         fetchProfile();
     }, [profile_id ]);
+    const {person} = profile;
+    const {name, picture, professionalHeadline} = person;
     return (
     <Modal show={show} {...props} aria-labelledby="contained-modal-title-vcenter">
         <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
-                Profile of {profile.person.professionalHeadline}
+                {name}
             </Modal.Title>
         </Modal.Header>
         <Modal.Body className="show-grid">
             <Container>
                 <Row>
-                    <Col xs={12} md={8}>
-
-                    </Col>
-                    <Col xs={6} md={4}>
-                        .col-xs-6 .col-md-4
-                    </Col>
+                    <Figure>
+                        <Figure.Image src={picture}/>
+                    </Figure>
                 </Row>
-
                 <Row>
-                    <Col xs={6} md={4}>
-                        .col-xs-6 .col-md-4
-                    </Col>
-                    <Col xs={6} md={4}>
-                        .col-xs-6 .col-md-4
-                    </Col>
-                    <Col xs={6} md={4}>
-                        .col-xs-6 .col-md-4
+                    <Col>
+                        {professionalHeadline}
                     </Col>
                 </Row>
             </Container>
@@ -125,7 +117,7 @@ function PersonList() {
                 {r.map((person, j) => <Col key={j}> <Jumbotron>
                     {person.name}
                     <Figure>
-                        <Figure.Image src={person.picture}/>
+                        <Figure.Image src={person.picture} width={171} height={180} rounded />
                     </Figure>
                     <Button onClick={() => setProfile_id(person.username)}>Show</Button>
                 </Jumbotron></Col>)}
@@ -137,16 +129,10 @@ function PersonList() {
 
 
 
-function SecondComponent() {
-    const [query, setQuery] = useState('');
+function MainTabs() {
     const [visible, setVisible] = useState(false);
     return (
         <Container fluid>
-            <input
-                type="hidden"
-                value={query}
-                onChange={event => setQuery(event.target.value)}
-            />
             <Tabs defaultActiveKey="persons" id="uncontrolled-tab-example">
                 <Tab eventKey='persons' title="Persons">
                     <PersonList/>
@@ -180,7 +166,7 @@ export default function Home({  }) {
       <Head>
         <title>Torre title</title>
       </Head>
-        <SecondComponent/>
+        <MainTabs/>
     </Layout>
   )
 }
