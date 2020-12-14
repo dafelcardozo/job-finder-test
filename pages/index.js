@@ -246,10 +246,7 @@ function PagesList({page}) {
     }, [page]);
     return (
         <Container fluid>
-            {!profileId && page === 'persons' &&  <PersonList onProfileSelected={(id) => {
-                console.info('Sets the profile id: '+id);
-                setProfileId(id)
-            }}/>}
+            {!profileId && page === 'persons' &&  <PersonList onProfileSelected={setProfileId}/>}
             {!profileId && page === 'opportunities' && <div className="container-fluid">
                 <div className="row">
                     <div className="col-2">
