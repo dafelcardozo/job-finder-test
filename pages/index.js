@@ -1,4 +1,3 @@
-import ReactDOM from 'react-dom'
 import Head from 'next/head'
 import Layout from '../components/layout'
 import { getSortedPostsData } from '../lib/posts'
@@ -15,6 +14,7 @@ import Figure from "react-bootstrap/Figure";
 import Button from 'react-bootstrap/Button';
 import Modal from  'react-bootstrap/Modal';
 import Spinner from 'react-bootstrap/Spinner';
+import Badge from 'react-bootstrap/Badge';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -99,9 +99,22 @@ function ProfileModal({show, profile_id, onHide, ...props}) {
         ;
 }
 
+function StrengthsPaginated({strengths}) {
+    const [howMany, setHowMany] = useState(5);
+    const all = strengths.slice(0, howMany);
+    return <><h5>
+        {all.map(({name}) => <Badge key={name}  pill variant="secondary">{name}</Badge>)}
+    </h5>
+        {strengths.length > howMany && <div>{howMany} de {strengths.length} <a onClick={() => setHowMany(howMany + 15)}>Show more</a></div>}
+    </>
+}
 
 function FullProfilePage({profile_id}) {
-    const noOne = { person:{professionalHeadline:'', name:'', links:[]}, experiences:[]};
+    const noOne = {
+        person: {professionalHeadline: '', name: '', links: [], location: {name: ''}},
+        experiences: [],
+        strengths: []
+    };
     const [profile, setDataProfile] = useState(noOne);
     const [loading, setLoading] = useState(false);
     const fetchProfile = async () => {
@@ -117,8 +130,9 @@ function FullProfilePage({profile_id}) {
     useEffect( () => {
         fetchProfile();
     }, [profile_id]);
-    const {person, experiences} = profile;
+    const {person, experiences, strengths} = profile;
     const {name, professionalHeadline, pictureThumbnail, links, location} = person;
+    const {name:lName, country} = location;
     return <Container fluid>
         {loading && <Spinner animation='grow' />}
             {!loading &&
@@ -138,20 +152,35 @@ function FullProfilePage({profile_id}) {
                                 {professionalHeadline}
                             </Row>
                             <Row>
+                                {lName || country}
+                            </Row>
+                            <Row>
                                 {links.map(({name, address}, i) =>
                                     <a key={i} href={address} target='_blank'>
                                         <FontAwesomeIcon icon={["fab", name]} />&nbsp;
                                     </a>)}
                             </Row>
+                            <Row>Habilidades actuales:</Row>
+                            <Row>
+                                <StrengthsPaginated strengths={strengths} />
+                            </Row>
                         </Container>
                     </Col>
                     <Col>
-                        {experiences.map(({name, organizations, additionalInfo}) => (
+                        <Row>Résumé</Row>
+                        {experiences.map(({name, organizations, additionalInfo, responsibilities, fromMonth, fromYear, toMonth, toYear}) => (<>
                             <Row>
                                 {name} at {organizations.map(({name, picture}) => (
-                                <>{name}{picture && <Figure><Figure.Image src={picture} width={85} height={90}  /> </Figure>}</>))}
+                                <>{name}{picture && <Figure><Figure.Image src={picture} width={42} height={45} /></Figure>}</>))}
+                            </Row>
+                            <Row>
                                 {additionalInfo}
-                            </Row>))}
+                                De {fromMonth}/{fromYear} a {toMonth}/{toYear}
+                                <ul>
+                                    {responsibilities.map(r => <li>{r}</li>)}
+                                </ul>
+                            </Row>
+                            </>))}
                     </Col>
                 </Row>
             </Container>
@@ -176,7 +205,7 @@ function PersonList() {
         searchPeople();
     }, ['']);
     const rows = persons.reduce((acc, p) => {
-        if (acc[acc.length-1].length === 4 )
+        if (acc[acc.length-1].length === 4)
             acc.push([]);
         acc[acc.length-1].push(p);
         return acc;
