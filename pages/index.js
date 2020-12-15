@@ -240,16 +240,18 @@ function PersonList({onProfileSelected}) {
 function SearchPage() {
     const [persons, setPersons] = useState([]);
     const [filters, setFilters] = useState([]);
+    const [search, setSearch] = useState('');
 
     const searchPeople = async () => {
-        console.info('Searching: ');
+        let clauses = [...filters];
+        if (search)
+            clauses.push({name:{term: search}});
         let payload = {};
-        if (filters.length === 1) {
+        if (clauses.length === 1) {
             payload = filters[0];
-        } else if (filters.length > 1) {
-            payload = {"and": filters};
+        } else if (clauses.length > 1) {
+            payload = {"and": clauses};
         }
-        console.info({payload});
         const res = await axios.post(
             '/api/people?currency=USD%24&page=1&periodicity=hourly&lang=es&size=20&aggregate=false&offset=20',
             payload,
@@ -258,7 +260,8 @@ function SearchPage() {
     };
     useEffect(() => {
         searchPeople();
-    }, [filters]);
+    }, [filters, search]);
+
     return <Container>
             <Row>
                 <Col><PersonsFilterBar visible={true} searchUpdated={setFilters}/></Col>
@@ -266,7 +269,8 @@ function SearchPage() {
                     <Container>
                         <Row>
                             <Form>
-                                <Form.Control type='text' placeholder='Buscar personas'/>
+                                <Form.Control type='text' placeholder='Buscar personas' value={search}
+                                              onChange={(event) => setSearch(event.target.value)}/>
                             </Form>
                         </Row>
                         <Row>
