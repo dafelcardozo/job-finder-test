@@ -54,10 +54,14 @@ a:hover {
   text-decoration: none;
 }
 
-h3 {
-  color:#CDDC39;
+#main_navbar svg {
+  font-size: xx-large;
 }
 
+#main_navbar a:hover {
+  color:#CDDC39;
+
+}
 h4{
   color:white
 }
