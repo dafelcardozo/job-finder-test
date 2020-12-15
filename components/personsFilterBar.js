@@ -9,11 +9,10 @@ export default function PersonsFilterBar({visible, searchUpdated}) {
     const [openTo, setOpenTo] = useState('');
 
     useEffect(() => {
-        searchUpdated([{openTo:{term:openTo}},  {
-            "location": {
-                "term": "Colombia"
-            }
-        }]);
+        if (openTo)
+            searchUpdated([{opento:{term:openTo}}]);
+        else
+            searchUpdated([]);
     }, [openTo]);
     return (<div className={ wrapperClass } >
         <Container className="bg-light border-right">

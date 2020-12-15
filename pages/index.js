@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Layout from '../components/layout'
 import {getSortedPostsData} from '../lib/posts'
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import axios from 'axios'
 import Navigation from "./navigation";
 import Carousel from "react-bootstrap/Carousel";
@@ -22,6 +22,7 @@ import '@fortawesome/fontawesome-free/css/brands.css'
 import '@fortawesome/fontawesome-free/js/all'
 import Form from 'react-bootstrap/Form'
 import PersonsFilterBar from "../components/personsFilterBar";
+import { throttle } from 'lodash';
 
 function OpportunitiesCarousel() {
     const [opportunities, setOpportunities] = useState([]);
@@ -241,26 +242,33 @@ function SearchPage() {
     const [persons, setPersons] = useState([]);
     const [filters, setFilters] = useState([]);
     const [search, setSearch] = useState('');
+    const [clicks, setClicks] = useState(0);
 
-    const searchPeople = async () => {
+    const searchPeople = () => {
+        console.info('searchPeople');
         let clauses = [...filters];
         if (search)
             clauses.push({name:{term: search}});
-        let payload = {};
+        console.info(clauses);
+        let payload ;
         if (clauses.length === 1) {
             payload = filters[0];
         } else if (clauses.length > 1) {
             payload = {"and": clauses};
+        } else  {
+            payload = {};
         }
-        const res = await axios.post(
+        console.info({payload});
+        axios.post(
             '/api/people?currency=USD%24&page=1&periodicity=hourly&lang=es&size=20&aggregate=false&offset=20',
             payload,
-            {headers:{"content-type":"application/json;charset=UTF-8"}});
-        setPersons(res.data.results);
+            {headers:{"content-type":"application/json;charset=UTF-8"}})
+            .then(res => setPersons(res.data.results))
+        ;
     };
     useEffect(() => {
-        searchPeople();
-    }, [filters, search]);
+        searchPeople()
+    }, [filters, clicks]);
 
     return <Container>
             <Row>
@@ -271,6 +279,7 @@ function SearchPage() {
                             <Form>
                                 <Form.Control type='text' placeholder='Buscar personas' value={search}
                                               onChange={(event) => setSearch(event.target.value)}/>
+                                <Button onClick={() => setClicks(clicks+1)}>Search</Button>
                             </Form>
                         </Row>
                         <Row>
