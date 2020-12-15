@@ -2,6 +2,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Image from 'react-bootstrap/Image';
 import React from "react";
+
+
 export default function Navigation({OnSelect}) {
     return <Navbar bg="dark" expand="lg" variant="dark" onSelect={(key) => OnSelect(key)} id="main_navbar">
         <Navbar.Brand href="#home">
