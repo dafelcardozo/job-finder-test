@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import Layout from '../components/layout'
-import {getSortedPostsData} from '../lib/posts'
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState } from 'react';
 import axios from 'axios'
 import Navigation from "./navigation";
 import Carousel from "react-bootstrap/Carousel";
@@ -267,15 +266,18 @@ function SearchPage() {
         searchPeople()
     }, [filters, clicks]);
 
-    return <Container>
+    return <Container fluid>
             <Row>
                 <Col><PersonsFilterBar visible={true} searchUpdated={setFilters}/></Col>
                 <Col>
                     <Container>
                         <Row>
                             <Form>
+                                <label>
                                 <Form.Control type='text' placeholder='Buscar personas' value={search}
-                                              onChange={(event) => setSearch(event.target.value)}/>
+                                              onChange={(event) => setSearch(event.target.value)}
+                                              className='field'/>
+                                Buscar personas</label>
                                 <Button onClick={() => setClicks(clicks+1)}>Search</Button>
                             </Form>
                         </Row>
@@ -299,7 +301,7 @@ function PagesList({page}) {
        setProfileId('')
     }, [page]);
     return (
-        <Container fluid>
+        <Container fluid >
             {!profileId && page === 'persons' &&  <PersonList onProfileSelected={setProfileId}/>}
             {!profileId && page === 'opportunities' && <div className="container-fluid">
                 <div className="row">
