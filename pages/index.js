@@ -245,11 +245,9 @@ function SearchPage() {
     const [clicks, setClicks] = useState(0);
 
     const searchPeople = () => {
-        console.info('searchPeople');
         let clauses = [...filters];
         if (search)
             clauses.push({name:{term: search}});
-        console.info(clauses);
         let payload ;
         if (clauses.length === 1) {
             payload = filters[0];
@@ -258,7 +256,6 @@ function SearchPage() {
         } else  {
             payload = {};
         }
-        console.info({payload});
         axios.post(
             '/api/people?currency=USD%24&page=1&periodicity=hourly&lang=es&size=20&aggregate=false&offset=20',
             payload,
