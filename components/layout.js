@@ -11,9 +11,9 @@ export default function Layout({ children, home }) {
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       </Head>
-      <main className='bg-dark'>{children}</main>
+      <main>{children}</main>
       {!home && (
-        <div >
+        <div>
           <Link href="/">
             <a>← Back to home</a>
           </Link>

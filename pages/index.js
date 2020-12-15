@@ -204,40 +204,33 @@ function FullProfilePage({profile_id}) {
 
 }
 
-function PersonList({onProfileSelected}) {
-    const [persons, setPersons] = useState([]);
-
-    const searchPeople = async () => {
-        const res = await axios.post(
-            '/api/people?currency=USD%24&page=1&periodicity=hourly&lang=es&size=20&aggregate=false&offset=20',
-            {"type":{"code":"full-time-employment"}},
-            {headers:{"content-type":"application/json;charset=UTF-8"}});
-        setPersons(res.data.results);
-    };
-    useEffect(() => {
-        searchPeople();
-    }, ['']);
+function PersonList({persons, onProfileSelected}) {
     const rows = persons.reduce((acc, p) => {
-        if (acc[acc.length-1].length === 4)
+        if (acc[acc.length - 1].length === 4)
             acc.push([]);
-        acc[acc.length-1].push(p);
+        acc[acc.length - 1].push(p);
         return acc;
-    },[[]]);
-    return <Container fluid>
-            {rows.map((r, i) => <Row key={i}>
-                {r.map(({picture, name, username}, j) => <Col key={j}> <Jumbotron>
-                    {name}
-                    <Figure>
-                        <Figure.Image src={picture} width={171} height={180} rounded />
-                    </Figure>
-                    <Button onClick={() => onProfileSelected(username)}>Show</Button>
-                </Jumbotron></Col>)}
-            </Row>)}
-        </Container>
+    }, [[]]);
+    return <Container fluid className='persons-list'>
+        {rows.map((r, i) => <Row key={i}>
+            {r.map(({picture, name, username}, j) => (
+                <Col key={j}>
+                    <Container fluid className='person-vignette bg-dark'>
+                        <Row className='d-flex justify-content-center'>
+                            <Figure>
+                                <Figure.Image src={picture} width={113} height={121} rounded/>
+                            </Figure>
+                        </Row>
+                        <Row className='d-flex justify-content-center'><h3>{name}</h3></Row>
+                    </Container>
+                </Col>
+            ))}
+        </Row>)}
+    </Container>
         ;
 }
 
-function SearchPage() {
+function SearchPage({onProfileSelected}) {
     const [persons, setPersons] = useState([]);
     const [filters, setFilters] = useState([]);
     const [search, setSearch] = useState('');
@@ -268,9 +261,9 @@ function SearchPage() {
 
     return <Container fluid>
             <Row>
-                <Col><PersonsFilterBar visible={true} searchUpdated={setFilters}/></Col>
+                <Col className='col-2'><PersonsFilterBar visible={true} searchUpdated={setFilters}/></Col>
                 <Col>
-                    <Container>
+                    <Container   fluid >
                         <Row>
                             <Form>
                                 <label>
@@ -282,9 +275,7 @@ function SearchPage() {
                             </Form>
                         </Row>
                         <Row>
-                            <ul>
-                            {persons.map(({name}, i) => <li key={i}>{name}</li>)}
-                            </ul>
+                            <PersonList persons={persons} onProfileSelected={onProfileSelected}/>
                         </Row>
                     </Container>
                 </Col>
@@ -301,8 +292,8 @@ function PagesList({page}) {
        setProfileId('')
     }, [page]);
     return (
-        <Container fluid >
-            {!profileId && page === 'persons' &&  <PersonList onProfileSelected={setProfileId}/>}
+        <Container fluid style={{'background-color': 'black'}} >
+            {!profileId && page === 'persons' &&  <PersonList persons={[]} onProfileSelected={setProfileId}/>}
             {!profileId && page === 'opportunities' && <div className="container-fluid">
                 <div className="row">
                     <div className="col-2">
@@ -318,7 +309,7 @@ function PagesList({page}) {
             </div>}
             {!profileId && page === 'genome' && <FullProfilePage profile_id='dafelcardozo'/>}
             {profileId && <FullProfilePage profile_id={profileId} />}
-            {!profileId && page === 'search' && <SearchPage/>}
+            {!profileId && page === 'search' && <SearchPage onProfileSelected={setProfileId}/>}
         </Container>
 
     );

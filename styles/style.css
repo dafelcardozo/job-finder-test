@@ -40,6 +40,15 @@
 }
 
 
+.persons-list {
+
+}
+
+.person-vignette {
+  margin: 15px;
+  height: 100%;
+  color:white;
+}
 body {
   font-family: "Open Sans", sans-serif;
   color: #272829;
